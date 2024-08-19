@@ -1,13 +1,21 @@
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import logger from '../utils/loggers.utils';
+import { Logger } from '@nestjs/common';
 
-export const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction): void => {
-    // Ghi log lỗi
-    logger.error('Error occurred: %s', err.stack);
+@Injectable()
+export class ErrorMiddleware implements NestMiddleware {
+  private readonly logger = new Logger(ErrorMiddleware.name);
 
-    // Gửi phản hồi lỗi đến client
-    res.status(err.status || 500).json({
-        message: err.message || 'Internal Server Error',
-        status: err.status || 500,
+  use(req: Request, res: Response, next: NextFunction): void {
+    // Định nghĩa hàm xử lý lỗi
+    res.on('finish', () => {
+      if (res.statusCode >= 400) {
+        // Ghi log lỗi
+        this.logger.error(`Error occurred: ${res.statusCode} - ${res.statusMessage}`);
+      }
     });
-};
+
+    // Tiếp tục với middleware hoặc route handler tiếp theo
+    next();
+  }
+}

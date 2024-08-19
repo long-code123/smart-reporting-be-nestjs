@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsDate, IsNumber, IsDecimal } from 'class-validator';
+import { IsString, IsOptional, IsDate, IsNumber, IsDecimal, IsIn } from 'class-validator';
 
 export class CreateProjectDto {
   @IsString()
@@ -6,6 +6,7 @@ export class CreateProjectDto {
 
   @IsString()
   @IsOptional()
+  @IsIn(['active', 'inactive'])
   readonly status?: string;
 
   @IsDecimal({ decimal_digits: '2' })

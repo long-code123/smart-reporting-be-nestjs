@@ -1,13 +1,22 @@
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import logger from '../utils/loggers.utils';
+import { Logger } from '@nestjs/common';
 
-export const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction): void => {
-    // Ghi log lỗi
-    logger.error('Error occurred: %s', err.stack);
+@Injectable()
+export class Error404Middleware implements NestMiddleware {
+  private readonly logger = new Logger(Error404Middleware.name);
 
-    // Gửi phản hồi lỗi đến client
-    res.status(err.status || 500).json({
-        message: err.message || 'Internal Server Error',
-        status: err.status || 500,
+  use(req: Request, res: Response, next: NextFunction): void {
+    // Tiếp tục với các route handler tiếp theo
+    next();
+  }
+
+  // Phương thức xử lý lỗi 404
+  handle404(req: Request, res: Response): void {
+    this.logger.warn(`404 Not Found: ${req.originalUrl}`);
+    res.status(404).json({
+      statusCode: 404,
+      message: 'Resource not found',
     });
-};
+  }
+}
