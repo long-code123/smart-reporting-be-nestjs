@@ -7,13 +7,14 @@ import { UsersModule } from './users/users.module';
 import { ProjectsModule } from './projects/projects.module';
 import { UserProjectsModule } from './userproject/user-projects.module';
 import * as dotenv from 'dotenv';
+import { AutomapperModule } from 'nestjsx-automapper';
 
 dotenv.config();
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
-      dialect: process.env.DATABASE_DIALECT as 'postgres',
+      dialect: 'postgres',
       host: process.env.DATABASE_HOST,
       port: +process.env.DATABASE_PORT,
       username: process.env.DATABASE_USERNAME,
@@ -27,6 +28,7 @@ dotenv.config();
     UsersModule,
     ProjectsModule,
     UserProjectsModule,
+    AutomapperModule.withMapper(),
   ],
   controllers: [],
   providers: [],
