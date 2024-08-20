@@ -15,7 +15,12 @@ export class ProjectsController {
 
   @Get()
   async findAll(): Promise<Project[]> {
-    return this.projectService.findAll();
+    return new Promise((resolve) => {
+      setTimeout(async () => {
+        const projects = await this.projectService.findAll();
+        resolve(projects);
+      }, 3000); // Trì hoãn 3 giây
+    });
   }
 
   @Get(':id')

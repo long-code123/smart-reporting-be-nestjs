@@ -11,7 +11,7 @@ export class Error404Middleware implements NestMiddleware {
     next();
   }
 
-  // Phương thức xử lý lỗi 404
+  // Middleware xử lý lỗi 404, cần được thêm vào AppModule
   handle404(req: Request, res: Response): void {
     this.logger.warn(`404 Not Found: ${req.originalUrl}`);
     res.status(404).json({

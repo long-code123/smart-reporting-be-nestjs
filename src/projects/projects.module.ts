@@ -5,6 +5,7 @@ import { ProjectsController } from './projects.controller';
 import { ProjectService } from './projects.service';
 import { StatusValidationMiddleware } from '../middlewares/status-validation.middleware'; // Đảm bảo đường dẫn chính xác
 import { CreateProjectDto } from './dto/create-project.dto'; // Đảm bảo đường dẫn chính xác
+import { ResponseTimeMiddleware } from '@src/middlewares/response-time.middleware';
 
 @Module({
   imports: [SequelizeModule.forFeature([Project])],
