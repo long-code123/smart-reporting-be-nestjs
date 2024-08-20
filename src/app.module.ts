@@ -10,6 +10,9 @@ import * as dotenv from 'dotenv';
 import { ResponseTimeMiddleware } from './middlewares/response-time.middleware';
 import { ErrorMiddleware } from './middlewares/error.middleware';
 import { Error404Middleware } from './middlewares/error404.middleware';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
+import { UserProfile } from './automapper/user.profile';
 
 dotenv.config();
 
@@ -30,9 +33,12 @@ dotenv.config();
     UsersModule,
     ProjectsModule,
     UserProjectsModule,
+    AutomapperModule.forRoot({
+      strategyInitializer: classes(),
+    }),
   ],
   controllers: [],
-  providers: [],
+  providers: [UserProfile],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -1,6 +1,7 @@
 import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescript';
 import { UserProject } from './user-project.model';
 import { Project } from './project.model';
+import { AutoMap } from '@automapper/classes';
 
 @Table
 export class User extends Model<User> {
@@ -15,12 +16,14 @@ export class User extends Model<User> {
     type: DataType.STRING,
     allowNull: false,
   })
+  @AutoMap()
   userName: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
+  @AutoMap()
   sex: string;
 
   @Column({
@@ -39,12 +42,14 @@ export class User extends Model<User> {
     type: DataType.STRING,
     allowNull: true,
   })
+  @AutoMap()
   contract: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
+  @AutoMap()
   role: string;
 
   @Column({
@@ -52,7 +57,7 @@ export class User extends Model<User> {
     allowNull: false,
     unique: true,
   })
-  account: string;
+  account: string;z
 
   @Column({
     type: DataType.STRING,
