@@ -1,11 +1,15 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './models/user.model';
+import { Role } from './models/role.model';
+import { UserRole } from './models/user-role.model';
 import { Project } from './models/project.model';
 import { UserProject } from './models/user-project.model';
 import { UsersModule } from './users/users.module';
 import { ProjectsModule } from './projects/projects.module';
 import { UserProjectsModule } from './userproject/user-projects.module';
+import { AuthModule } from './auth/auth.module';  // Import AuthModule here
+import { AuthMiddleware } from './middlewares/authen.middleware'; // Import AuthMiddleware
 import * as dotenv from 'dotenv';
 import { ResponseTimeMiddleware } from './middlewares/response-time.middleware';
 import { ErrorMiddleware } from './middlewares/error.middleware';
@@ -13,10 +17,6 @@ import { Error404Middleware } from './middlewares/error404.middleware';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { UserProfile } from './automapper/user.profile';
-import { RoleModule } from './roles/roles.module';
-import { UserRoleModule } from './userrole/user-roles.module';
-import { Role } from './models/role.model';
-import { UserRole } from './models/user-role.model';
 
 dotenv.config();
 
@@ -29,15 +29,14 @@ dotenv.config();
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      models: [User, Role, UserRole, Project, UserProject], // Đảm bảo đã đăng ký
+      models: [User, Role, UserRole, Project, UserProject],
       autoLoadModels: true,
       synchronize: true,
     }),
     SequelizeModule.forFeature([User, Role, UserRole, Project, UserProject]),
     UsersModule,
     ProjectsModule,
-    RoleModule,
-    UserRoleModule,
+    AuthModule,  // Ensure AuthModule is imported
     UserProjectsModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
@@ -55,8 +54,14 @@ export class AppModule implements NestModule {
       .apply(ErrorMiddleware) // Đặt middleware xử lý lỗi sau đó
       .forRoutes('*')
 
-      // Đặt middleware xử lý lỗi 404 cuối cùng
-      .apply(Error404Middleware) 
-      .forRoutes('*');
+      .apply(Error404Middleware) // Đặt middleware xử lý lỗi 404 cuối cùng
+      .forRoutes('*')
+
+      .apply(AuthMiddleware)
+      .exclude(
+        { path: 'auth/login', method: RequestMethod.POST },  // Exclude login route
+        { path: 'auth/refresh', method: RequestMethod.POST }  // Exclude refresh token route
+      )
+      .forRoutes('*'); // Apply to all routes except excluded ones
   }
 }

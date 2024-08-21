@@ -20,5 +20,9 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/express.d.ts" // Đảm bảo rằng file định nghĩa này được bao gồm
+  ]
 }

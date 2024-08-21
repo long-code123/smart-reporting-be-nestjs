@@ -3,13 +3,23 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from '../models/user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class UserService {
+  private readonly saltRounds = 10;
+
   constructor(@InjectModel(User) private readonly userModel: typeof User) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return this.userModel.create(createUserDto);
+    const hashedPassword = await bcrypt.hash(createUserDto.password, this.saltRounds);
+    const newUser = { ...createUserDto, password: hashedPassword };
+    return this.userModel.create(newUser);
+  }
+  
+  async findOneByAccount(account: string): Promise<User> {
+    return this.userModel.findOne({ where: { account } });
   }
 
   async findAll(): Promise<User[]> {
