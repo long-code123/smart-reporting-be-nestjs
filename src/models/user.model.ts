@@ -2,6 +2,8 @@ import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescr
 import { UserProject } from './user-project.model';
 import { Project } from './project.model';
 import { AutoMap } from '@automapper/classes';
+import { Role } from './role.model';
+import { UserRole } from './user-role.model';
 
 @Table
 export class User extends Model<User> {
@@ -50,7 +52,7 @@ export class User extends Model<User> {
     allowNull: true,
   })
   @AutoMap()
-  role: string;
+  position: string;
 
   @Column({
     type: DataType.STRING,
@@ -79,4 +81,7 @@ export class User extends Model<User> {
 
   @BelongsToMany(() => Project, () => UserProject)
   projects: Project[];
+
+  @BelongsToMany(() => Role, () => UserRole)
+  roles: Role[];
 }

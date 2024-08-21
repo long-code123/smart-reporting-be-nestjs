@@ -13,6 +13,10 @@ import { Error404Middleware } from './middlewares/error404.middleware';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { UserProfile } from './automapper/user.profile';
+import { RoleModule } from './roles/roles.module';
+import { UserRoleModule } from './userrole/user-roles.module';
+import { Role } from './models/role.model';
+import { UserRole } from './models/user-role.model';
 
 dotenv.config();
 
@@ -25,13 +29,15 @@ dotenv.config();
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      models: [User, Project, UserProject],
+      models: [User, Role, UserRole, Project, UserProject], // Đảm bảo đã đăng ký
       autoLoadModels: true,
       synchronize: true,
     }),
-    SequelizeModule.forFeature([User, Project, UserProject]),
+    SequelizeModule.forFeature([User, Role, UserRole, Project, UserProject]),
     UsersModule,
     ProjectsModule,
+    RoleModule,
+    UserRoleModule,
     UserProjectsModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),

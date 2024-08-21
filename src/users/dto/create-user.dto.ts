@@ -22,7 +22,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
-  readonly role?: string;
+  readonly position?: string;
 
   @IsString()
   readonly account: string;
