@@ -17,6 +17,8 @@ import { Error404Middleware } from './middlewares/error404.middleware';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { UserProfile } from './automapper/user.profile';
+import { RoleModule } from './roles/roles.module';
+import { UserRoleModule } from './userrole/user-roles.module';
 
 dotenv.config();
 
@@ -37,6 +39,8 @@ dotenv.config();
     UsersModule,
     ProjectsModule,
     AuthModule,  // Ensure AuthModule is imported
+    RoleModule,
+    UserRoleModule,
     UserProjectsModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
