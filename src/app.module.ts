@@ -19,6 +19,7 @@ import { classes } from '@automapper/classes';
 import { UserProfile } from './automapper/user.profile';
 import { RoleModule } from './roles/roles.module';
 import { UserRoleModule } from './userrole/user-roles.module';
+import { UploadModule } from './upload/upload.module';
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ dotenv.config();
     RoleModule,
     UserRoleModule,
     UserProjectsModule,
+    UploadModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
