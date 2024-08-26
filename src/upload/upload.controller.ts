@@ -4,6 +4,7 @@ import { ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { FileUploadDto } from './dto/upload-file.dto';
+import { validateFileMimeType } from '@src/utils/file-utils';
 
 @Controller('upload')
 export class UploadController {
@@ -12,7 +13,7 @@ export class UploadController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: (req, file, callback) => {
-          callback(null, ''); // Set destination here if needed
+          callback(null, '');
         },
         filename: (req, file, callback) => {
           const ext = extname(file.originalname);
@@ -20,10 +21,12 @@ export class UploadController {
         },
       }),
       fileFilter: (req, file, callback) => {
-        if (!file.mimetype.match(/\/(png|jpeg)$/)) {
-          return callback(new BadRequestException('Only PNG and JPG files are allowed'), false);
+        try {
+          validateFileMimeType(file, ['image/png', 'image/jpeg']);
+          callback(null, true);
+        } catch (error) {
+          callback(error, false);
         }
-        callback(null, true);
       },
     }),
   )

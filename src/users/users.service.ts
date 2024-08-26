@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '../models/user.model';
-import { UserRole } from '../models/user-role.model'; // Import UserRole model
-import { Role } from '../models/role.model'; // Import Role model
+import { UserRole } from '../models/user-role.model'; 
+import { Role } from '../models/role.model'; 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -13,8 +13,8 @@ export class UserService {
 
   constructor(
     @InjectModel(User) private readonly userModel: typeof User,
-    @InjectModel(UserRole) private readonly userRoleModel: typeof UserRole, // Inject UserRole model
-    @InjectModel(Role) private readonly roleModel: typeof Role, // Inject Role model
+    @InjectModel(UserRole) private readonly userRoleModel: typeof UserRole, 
+    @InjectModel(Role) private readonly roleModel: typeof Role,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -50,7 +50,6 @@ export class UserService {
     }
   }
 
-  // Thêm phương thức để lấy vai trò của người dùng
   async getUserRoles(userId: number): Promise<string[]> {
     const userRoles = await this.userRoleModel.findAll({ where: { userId } });
 

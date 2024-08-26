@@ -8,7 +8,6 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Cấu hình Swagger
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
     .setDescription('The API description for User and Project models')

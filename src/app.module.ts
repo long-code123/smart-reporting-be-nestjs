@@ -8,8 +8,8 @@ import { UserProject } from './models/user-project.model';
 import { UsersModule } from './users/users.module';
 import { ProjectsModule } from './projects/projects.module';
 import { UserProjectsModule } from './userproject/user-projects.module';
-import { AuthModule } from './auth/auth.module';  // Import AuthModule here
-import { AuthMiddleware } from './middlewares/authen.middleware'; // Import AuthMiddleware
+import { AuthModule } from './auth/auth.module'; 
+import { AuthMiddleware } from './middlewares/authen.middleware'; 
 import * as dotenv from 'dotenv';
 import { ResponseTimeMiddleware } from './middlewares/response-time.middleware';
 import { ErrorMiddleware } from './middlewares/error.middleware';
@@ -20,26 +20,17 @@ import { UserProfile } from './automapper/user.profile';
 import { RoleModule } from './roles/roles.module';
 import { UserRoleModule } from './userrole/user-roles.module';
 import { UploadModule } from './upload/upload.module';
+import { sequelizeConfig } from './configs/db.configs';
 
 dotenv.config();
 
 @Module({
   imports: [
-    SequelizeModule.forRoot({
-      dialect: process.env.DATABASE_DIALECT as 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: +process.env.DATABASE_PORT,
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      models: [User, Role, UserRole, Project, UserProject],
-      autoLoadModels: true,
-      synchronize: true,
-    }),
+    SequelizeModule.forRoot(sequelizeConfig),
     SequelizeModule.forFeature([User, Role, UserRole, Project, UserProject]),
     UsersModule,
     ProjectsModule,
-    AuthModule,  // Ensure AuthModule is imported
+    AuthModule, 
     RoleModule,
     UserRoleModule,
     UserProjectsModule,
@@ -54,20 +45,20 @@ dotenv.config();
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(ResponseTimeMiddleware) // Đặt middleware đo thời gian phản hồi đầu tiên
+      .apply(ResponseTimeMiddleware) 
       .forRoutes('*')
 
-      .apply(ErrorMiddleware) // Đặt middleware xử lý lỗi sau đó
+      .apply(ErrorMiddleware) 
       .forRoutes('*')
 
-      .apply(Error404Middleware) // Đặt middleware xử lý lỗi 404 cuối cùng
+      .apply(Error404Middleware) 
       .forRoutes('*')
 
       .apply(AuthMiddleware)
       .exclude(
-        { path: 'auth/login', method: RequestMethod.POST },  // Exclude login route
-        { path: 'auth/refresh', method: RequestMethod.POST }  // Exclude refresh token route
+        { path: 'auth/login', method: RequestMethod.POST },  
+        { path: 'auth/refresh', method: RequestMethod.POST }  
       )
-      .forRoutes('*'); // Apply to all routes except excluded ones
+      .forRoutes('*'); 
   }
 }

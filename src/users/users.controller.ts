@@ -17,8 +17,8 @@ export class UsersController {
   ) {}
 
   @Post()
-  @Roles('admin') // Chỉ cho phép người dùng có vai trò 'admin' thực hiện thao tác này
-  @UseGuards(RolesGuard) // Bảo vệ endpoint bằng RolesGuard
+  @Roles('admin') 
+  @UseGuards(RolesGuard) 
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
   }
@@ -32,7 +32,7 @@ export class UsersController {
   async findAllDto(): Promise<UserDto[]> {
     const users = await this.userService.findAll();
     console.log(users);
-    return users.map(user => this.mapper.map(user, User, UserDto)); // Đảm bảo ánh xạ đúng
+    return users.map(user => this.mapper.map(user, User, UserDto)); 
   }
 
   @Get(':id')
@@ -41,15 +41,15 @@ export class UsersController {
   }
 
   @Put(':id')
-  @Roles('admin') // Chỉ cho phép người dùng có vai trò 'admin' thực hiện thao tác này
-  @UseGuards(RolesGuard) // Bảo vệ endpoint bằng RolesGuard
+  @Roles('admin') 
+  @UseGuards(RolesGuard)
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  @Roles('admin') // Chỉ cho phép người dùng có vai trò 'admin' thực hiện thao tác này
-  @UseGuards(RolesGuard) // Bảo vệ endpoint bằng RolesGuard
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   async remove(@Param('id') id: number): Promise<void> {
     return this.userService.remove(id);
   }

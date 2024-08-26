@@ -5,38 +5,34 @@ import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
-  private readonly accessTokenExpiresIn = '5m'; // 5 minutes
-  private readonly refreshTokenExpiresIn = '2h'; // 2 hours
+  private readonly accessTokenExpiresIn = process.env.ACCESS_TOKEN_EXPRIRES_IN; 
+  private readonly refreshTokenExpiresIn = process.env.REFRESH_TOKEN_EXPRIRES_IN;
 
   constructor(private readonly usersService: UserService) {}
 
   async validateUser(account: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByAccount(account);
     if (user && await bcrypt.compare(password, user.password)) {
-      const { password, ...result } = user.get(); // Exclude password from result
+      const { password, ...result } = user.get();
       return result;
     }
-    return null;
+    throw new UnauthorizedException('Invalid credentials');
   }
 
   async login(account: string, password: string): Promise<any> {
     const user = await this.validateUser(account, password);
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
 
-    // In thông tin người dùng để kiểm tra
     console.log('Authenticated user:', user);
+    const roles = await this.usersService.getUserRoles(user.userId);
 
-    // Create access token with userName
     const accessToken = jwt.sign(
-      { sub: user.userId, userName: user.userName },  // Sử dụng user.userName
+      { sub: user.userId, userName: user.userName, roles }, 
       process.env.JWT_SECRET,
       { expiresIn: this.accessTokenExpiresIn }
     );
     console.log('Generated access token:', accessToken);
 
-    // Create refresh token without userName
+    
     const refreshToken = jwt.sign(
       { sub: user.userId }, 
       process.env.JWT_SECRET,
@@ -53,18 +49,25 @@ export class AuthService {
     try {
       const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
       
-      // In ra nội dung đã giải mã
       console.log('Decoded refresh token:', decoded);
-
-      const accessToken = jwt.sign(
-        { sub: (decoded as any).sub }, 
+  
+      const newAccessToken = jwt.sign(
+        { sub: (decoded as any).sub, roles: (decoded as any).roles }, 
         process.env.JWT_SECRET,
         { expiresIn: this.accessTokenExpiresIn }
       );
-      return { accessToken };
+  
+      const newRefreshToken = jwt.sign(
+        { sub: (decoded as any).sub }, 
+        process.env.JWT_SECRET,
+        { expiresIn: this.refreshTokenExpiresIn }
+      );
+  
+      return { accessToken: newAccessToken, refreshToken: newRefreshToken };
     } catch (error) {
       console.error('Token validation error:', error);
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
+  
 }

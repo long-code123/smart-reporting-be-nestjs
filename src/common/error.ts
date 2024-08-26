@@ -1,5 +1,3 @@
-// common/error.ts
-
 export const StatusCode = {
     OK: 200,
     CREATED: 201,
@@ -18,7 +16,6 @@ export const StatusCode = {
     SERVICE_UNAVAILABLE: 503,
   };
   
-  // Base error class
   export class AppError extends Error {
     public statusCode: number;
   
@@ -30,7 +27,6 @@ export const StatusCode = {
     }
   }
   
-  // Specific error classes
   export class BadRequestError extends AppError {
     constructor(message: string = 'Bad Request') {
       super(message, StatusCode.BAD_REQUEST);

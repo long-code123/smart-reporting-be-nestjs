@@ -1,5 +1,3 @@
-// src/roles/role.dto.ts
-
 import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateRoleDto {

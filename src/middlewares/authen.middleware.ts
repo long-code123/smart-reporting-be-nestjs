@@ -1,16 +1,15 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { UserService } from '../users/users.service'; // Đảm bảo đường dẫn đúng
+import { UserService } from '../users/users.service';
 
-// Mở rộng giao diện Request để thêm thuộc tính user
 interface CustomRequest extends Request {
   user?: { userId: number; userName?: string; roles?: string[] };
 }
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(private readonly userService: UserService) {}  // Thêm UserService vào constructor
+  constructor(private readonly userService: UserService) {} 
 
   async use(req: CustomRequest, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
@@ -25,7 +24,6 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     try {
-      // Xác thực token
       const decoded = jwt.verify(token, process.env.JWT_SECRET) as jwt.JwtPayload;
       
       console.log('Decoded token:', decoded);
@@ -34,22 +32,11 @@ export class AuthMiddleware implements NestMiddleware {
         throw new UnauthorizedException('Invalid token');
       }
 
-      const userId = Number(decoded.sub);
-
-      if (isNaN(userId)) {
-        throw new UnauthorizedException('Invalid token');
-      }
-
-      // Lấy thông tin người dùng và vai trò của họ từ cơ sở dữ liệu
-      const user = await this.userService.findOne(userId);
-      if (!user) {
-        throw new UnauthorizedException('User not found');
-      }
-
-      const roles = await this.userService.getUserRoles(userId);
-
-      // Gán thông tin người dùng và vai trò vào req.user
-      req.user = { userId, userName: decoded.userName, roles };
+      req.user = { 
+        userId: Number(decoded.sub), 
+        userName: decoded.userName, 
+        roles: decoded.roles as string[] 
+      };
 
       next();
     } catch (error) {

@@ -19,5 +19,4 @@ export class UserDto {
   @AutoMap()
   role: string;
 
-  // Thêm các thuộc tính khác nếu cần
 }

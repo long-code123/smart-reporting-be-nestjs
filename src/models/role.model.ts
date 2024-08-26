@@ -16,7 +16,7 @@ export class Role extends Model<Role> {
     allowNull: false,
     unique: true,
     validate: {
-      isIn: [['user', 'admin']],  // Chỉ chấp nhận "user" và "admin"
+      isIn: [['user', 'admin']], 
     },
   })
   roleName: string;

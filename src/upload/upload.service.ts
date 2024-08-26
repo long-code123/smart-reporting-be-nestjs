@@ -1,5 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
+import { validateFileMimeType } from '@src/utils/file-utils';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 
@@ -9,7 +10,7 @@ export class UploadService {
     return {
       storage: diskStorage({
         destination: (req, file, callback) => {
-          callback(null, ''); // Đặt destination ở đây nếu cần
+          callback(null, ''); 
         },
         filename: (req, file, callback) => {
           const ext = extname(file.originalname);
@@ -17,10 +18,12 @@ export class UploadService {
         },
       }),
       fileFilter: (req, file, callback) => {
-        if (!file.mimetype.match(/\/(png|jpeg)$/)) {
-          return callback(new BadRequestException('Only PNG and JPG files are allowed'), false);
+        try {
+          validateFileMimeType(file, ['image/png', 'image/jpeg']);
+          callback(null, true);
+        } catch (error) {
+          callback(error, false);
         }
-        callback(null, true);
       },
     };
   }

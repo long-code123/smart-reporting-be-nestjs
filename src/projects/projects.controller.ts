@@ -5,7 +5,7 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from '../models/project.model';
 
-@ApiTags('projects') // Tag API để nhóm các endpoint liên quan đến projects
+@ApiTags('projects')
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectService: ProjectService) {}

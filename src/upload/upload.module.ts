@@ -2,18 +2,16 @@ import { BadRequestException, Module } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { UploadController } from './upload.controller';
 import { MulterModule } from '@nestjs/platform-express';
-import { diskStorage } from 'multer'; // Thêm dòng này để import diskStorage
+import { diskStorage } from 'multer'; 
 
 @Module({
   imports: [
     MulterModule.register({
       storage: diskStorage({
         destination: (req, file, callback) => {
-          // Không lưu vào hệ thống
           callback(null, '');
         },
         filename: (req, file, callback) => {
-          // Chỉ lưu trữ tạm thời trong bộ nhớ
           callback(null, file.originalname);
         }
       }),

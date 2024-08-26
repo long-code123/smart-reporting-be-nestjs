@@ -3,8 +3,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Project } from '../models/project.model';
 import { ProjectsController } from './projects.controller';
 import { ProjectService } from './projects.service';
-import { StatusValidationMiddleware } from '../middlewares/status-validation.middleware'; // Đảm bảo đường dẫn chính xác
-import { CreateProjectDto } from './dto/create-project.dto'; // Đảm bảo đường dẫn chính xác
+import { StatusValidationMiddleware } from '../middlewares/status-validation.middleware'; 
+import { CreateProjectDto } from './dto/create-project.dto';
 import { ResponseTimeMiddleware } from '@src/middlewares/response-time.middleware';
 
 @Module({
@@ -15,7 +15,7 @@ import { ResponseTimeMiddleware } from '@src/middlewares/response-time.middlewar
 export class ProjectsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(StatusValidationMiddleware) // Đăng ký middleware kiểm tra status
+      .apply(StatusValidationMiddleware) 
       .forRoutes({ path: 'projects', method: RequestMethod.POST });
   }
 }
