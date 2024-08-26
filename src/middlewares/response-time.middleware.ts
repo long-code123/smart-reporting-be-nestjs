@@ -8,11 +8,16 @@ export class ResponseTimeMiddleware implements NestMiddleware {
 
     const originalEnd = res.end;
 
-    res.end = (function (this: Response, ...args: any[]): Response {
+    res.end = function (...args: any[]): Response {
       const responseTime = Date.now() - start;
-      res.setHeader('X-Response-Time', `${responseTime}ms`);
-      return originalEnd.apply(this, args);
-    }) as any;
+
+      // Kiểm tra nếu headers đã được gửi thì không set lại header
+      if (!res.headersSent) {
+        res.setHeader('X-Response-Time', `${responseTime}ms`);
+      }
+
+      return originalEnd.apply(res, args);
+    } as any;
 
     next();
   }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Res } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -6,8 +6,10 @@ import { User } from '../models/user.model';
 import { UserDto } from './dto/user.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { RolesGuard } from '../guards/roles.guard'; // Đường dẫn đến RolesGuard
+import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '@src/decorator/roles.decorator';
+import { Response } from 'express';
+
 
 @Controller('users')
 export class UsersController {
@@ -35,6 +37,11 @@ export class UsersController {
     return users.map(user => this.mapper.map(user, User, UserDto)); 
   }
 
+  @Get('export')
+  async exportUsers(@Res() res: Response) {
+    await this.userService.exportUsersToExcel(res);
+  }
+  
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<User> {
     return this.userService.findOne(id);
@@ -53,4 +60,5 @@ export class UsersController {
   async remove(@Param('id') id: number): Promise<void> {
     return this.userService.remove(id);
   }
+
 }
